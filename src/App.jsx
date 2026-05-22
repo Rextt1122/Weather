@@ -286,6 +286,12 @@ function App() {
 
       mapInstanceRef.current = map;
       markerInstanceRef.current = marker;
+
+      setTimeout(() => {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize();
+        }
+      }, 250);
     }
   }, [weatherData, loading]);
 
