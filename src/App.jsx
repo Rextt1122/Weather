@@ -203,6 +203,14 @@ function App() {
   }, [units]);
 
   useEffect(() => {
+    if (loading && mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+      markerInstanceRef.current = null;
+    }
+  }, [loading]);
+
+  useEffect(() => {
     const mapElement = document.getElementById('map');
     if (mapElement && !mapInstanceRef.current && weatherData) {
       const map = L.map('map', {
