@@ -273,10 +273,10 @@ function App() {
         html: `<div style="
           width: 18px;
           height: 18px;
-          background: #0df2c9;
+          background: #2563eb;
           border: 3px solid #ffffff;
           border-radius: 50%;
-          box-shadow: 0 0 12px #0df2c9;
+          box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
         "></div>`,
         iconSize: [18, 18],
         iconAnchor: [9, 9]
