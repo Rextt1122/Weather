@@ -712,7 +712,8 @@ body {
   gap: 8px;
 }
 
-.leaflet-control-layers-list input[type="radio"] {
+.leaflet-control-layers-list input[type="radio"],
+.leaflet-control-layers-list input[type="checkbox"] {
   accent-color: var(--accent-mint) !important;
   cursor: pointer;
 }

@@ -222,7 +222,28 @@ function App() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
       });
 
+      const rainOverlay = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`, {
+        maxZoom: 18,
+        attribution: '&copy; OpenWeatherMap'
+      });
+
+      const cloudsOverlay = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${API_KEY}`, {
+        maxZoom: 18,
+        attribution: '&copy; OpenWeatherMap'
+      });
+
+      const tempOverlay = L.tileLayer(`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY}`, {
+        maxZoom: 18,
+        attribution: '&copy; OpenWeatherMap'
+      });
+
+      const windOverlay = L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${API_KEY}`, {
+        maxZoom: 18,
+        attribution: '&copy; OpenWeatherMap'
+      });
+
       googleHybrid.addTo(map);
+      rainOverlay.addTo(map);
 
       const baseMaps = {
         "Google Satelit": googleHybrid,
@@ -230,7 +251,14 @@ function App() {
         "Tema Gelap": darkSlate
       };
 
-      L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+      const overlayMaps = {
+        "Radar Hujan": rainOverlay,
+        "Lapisan Awan": cloudsOverlay,
+        "Peta Suhu (Panas)": tempOverlay,
+        "Radar Angin": windOverlay
+      };
+
+      L.control.layers(baseMaps, overlayMaps, { position: 'topright' }).addTo(map);
 
       const customIcon = L.divIcon({
         className: 'custom-map-marker',
