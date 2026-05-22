@@ -691,6 +691,32 @@ body {
   border-radius: 14px;
 }
 
+.leaflet-control-layers {
+  background: rgba(11, 19, 41, 0.9) !important;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 12px !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.8rem !important;
+  padding: 8px 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+.leaflet-control-layers-list label {
+  margin-bottom: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.leaflet-control-layers-list input[type="radio"] {
+  accent-color: var(--accent-mint) !important;
+  cursor: pointer;
+}
+
 .forecast-section {
   display: flex;
   flex-direction: column;

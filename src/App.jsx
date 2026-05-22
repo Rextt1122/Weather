@@ -210,9 +210,27 @@ function App() {
         attributionControl: true
       }).setView([weatherData.lat, weatherData.lon], 10);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      const googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        attribution: '&copy; Google Maps'
+      });
+
+      const googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        attribution: '&copy; Google Maps'
+      });
+
+      const darkSlate = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-      }).addTo(map);
+      });
+
+      googleHybrid.addTo(map);
+
+      const baseMaps = {
+        "Google Satelit": googleHybrid,
+        "Google Jalan": googleStreets,
+        "Tema Gelap": darkSlate
+      };
+
+      L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
 
       const customIcon = L.divIcon({
         className: 'custom-map-marker',
