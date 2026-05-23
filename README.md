@@ -1,16 +1,38 @@
-# React + Vite
+# SkyFlow Pro - Dashboard Pemantauan Cuaca Premium
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SkyFlow Pro adalah aplikasi dashboard pemantauan cuaca modern berbasis React + Vite yang mengadopsi estetika **Luminous Light Glassmorphism** (kaca frosted cerah). Aplikasi ini menyajikan data meteorologi riil dari seluruh Indonesia secara langsung serta peta satelit radar cuaca yang interaktif.
 
-Currently, two official plugins are available:
+## 🌟 Fitur Utama
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Dashboard Cuaca Riil**: Menyajikan informasi suhu, deskripsi cuaca, suhu terasa (*feels like*), kelembapan (dengan progress bar dinamis), kecepatan angin, tekanan udara, visibilitas, serta waktu terbit & terbenam (format WIB).
+- **Peta Satelit Radar Interaktif**: Peta interaktif berbasis Leaflet yang mendukung penjelajahan koordinat kota secara dinamis (efek *flyTo*), dilengkapi lapisan peta (Google Satelit, Google Jalan, Peta Gelap) dan radar cuaca real-time (Curah Hujan, Awan, Suhu, Angin).
+- **Live Waktu Lokal**: Penunjuk jam digital serta hari dan tanggal dalam format bahasa Indonesia (WIB) yang diperbarui setiap detik.
+- **Unit Selector**: Tombol konversi instan untuk mengubah satuan suhu dari Celcius (°C) ke Fahrenheit (°F) secara menyeluruh.
+- **Riwayat Pencarian & Smart Alert**: Sidebar penyimpan daftar riwayat kota yang baru dicari dan notifikasi eror melayang (*floating toast alert*) yang akan menghilang secara otomatis setelah 4 detik.
 
-## React Compiler
+## 🛠️ Teknologi yang Digunakan
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend Core**: React (Functional Components, Hooks like useState, useEffect, useRef)
+- **Bundler & Tooling**: Vite
+- **Peta & Geospasial**: Leaflet, Google Maps Tiles, OpenWeatherMap Map Layers
+- **Styling**: Vanilla CSS (CSS Variables, Flexbox, CSS Grid, Backdrop Filters, Glassmorphism, CSS Transitions/Animations)
+- **Ikonografi**: Google Material Symbols (Material 3)
 
-## Expanding the ESLint configuration
+## 🚀 Cara Menjalankan Proyek
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Unduh Dependensi**:
+   ```bash
+   npm install
+   ```
+
+2. **Konfigurasi Kunci API**:
+   Buka berkas `.env` di direktori utama, lalu masukkan kunci API OpenWeatherMap Anda yang valid:
+   ```env
+   VITE_OPENWEATHER_API_KEY=YOUR_OPENWEATHERMAP_API_KEY_HERE
+   ```
+
+3. **Jalankan Server Lokal (Development Server)**:
+   ```bash
+   npm run dev
+   ```
+   Aplikasi akan berjalan secara lokal di alamat `http://localhost:5173/`.
