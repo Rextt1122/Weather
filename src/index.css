@@ -39,7 +39,7 @@ body {
   padding: 20px;
   overflow-x: hidden;
 }
-
+ 
 @media (min-width: 992px) {
   body {
     height: 100vh;
