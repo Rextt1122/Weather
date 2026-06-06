@@ -62,7 +62,13 @@ function App() {
   const [error, setError] = useState('');
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [units, setUnits] = useState('metric');
-  const [recentSearches, setRecentSearches] = useState(['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Yogyakarta']);
+  const [recentSearches, setRecentSearches] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    } catch {
+      return [];
+    }
+  });
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const mapInstanceRef = useRef(null);
@@ -113,7 +119,9 @@ function App() {
   const addRecentSearch = (name) => {
     setRecentSearches((prev) => {
       const filtered = prev.filter((c) => c.toLowerCase() !== name.toLowerCase());
-      return [name, ...filtered].slice(0, 5);
+      const updated = [name, ...filtered].slice(0, 5);
+      localStorage.setItem('recentSearches', JSON.stringify(updated));
+      return updated;
     });
   };
 
@@ -122,8 +130,10 @@ function App() {
     const windRaw = data.wind.speed;
     const windSpeed = units === 'metric' ? `${(windRaw * 3.6).toFixed(1)} km/h` : `${windRaw.toFixed(1)} mph`;
 
+    const cityName = data.name === 'Kepatihan' ? 'Bandung' : data.name;
+
     return {
-      name: data.name,
+      name: cityName,
       temp: Math.round(data.main.temp),
       tempUnit: tempSymbol,
       condition: data.weather[0].description,
@@ -228,7 +238,8 @@ function App() {
           },
           () => {
             fetchWeather({ type: 'city', name: 'Jakarta' });
-          }
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       } else {
         fetchWeather({ type: 'city', name: 'Jakarta' });
@@ -354,10 +365,55 @@ function App() {
     e.preventDefault();
     if (!cityInput.trim()) return;
     fetchWeather({ type: 'city', name: cityInput });
+    setCityInput('');
   };
 
   const handleRecentClick = (cityName) => {
     fetchWeather({ type: 'city', name: cityName });
+  };
+
+  const clearHistory = () => {
+    setRecentSearches([]);
+    localStorage.removeItem('recentSearches');
+  };
+
+  const deleteHistoryItem = (cityName) => {
+    setRecentSearches((prev) => {
+      const updated = prev.filter((c) => c !== cityName);
+      localStorage.setItem('recentSearches', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleGeolocation = () => {
+    if (navigator.geolocation) {
+      setLoading(true);
+      setError('');
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          fetchWeather({
+            type: 'coords',
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          });
+        },
+        (err) => {
+          setLoading(false);
+          let errMsg = 'Gagal mendapatkan lokasi. Pastikan izin lokasi diaktifkan.';
+          if (err.code === err.PERMISSION_DENIED) {
+            errMsg = 'Izin akses lokasi ditolak.';
+          } else if (err.code === err.POSITION_UNAVAILABLE) {
+            errMsg = 'Informasi lokasi tidak tersedia.';
+          } else if (err.code === err.TIMEOUT) {
+            errMsg = 'Waktu permintaan lokasi habis.';
+          }
+          setError(errMsg);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } else {
+      setError('Geolokasi tidak didukung oleh browser Anda.');
+    }
   };
 
   // SkeletonLoader moved outside App component to follow react-hooks/static-components rule
@@ -407,7 +463,7 @@ function App() {
           </div>
           <div className="brand-badge">
             <span className="badge-dot"></span>
-            <span>Stasiun Cuaca Aktif</span>
+            <span>Weather Station</span>
           </div>
         </div>
 
@@ -436,18 +492,41 @@ function App() {
         </div>
 
         <div className="history-section">
-          <h2 className="history-title">Riwayat Kota</h2>
+          <div className="history-header">
+            <h2 className="history-title">Riwayat Kota</h2>
+            {recentSearches.length > 0 && (
+              <button onClick={clearHistory} className="clear-history-btn" title="Hapus semua riwayat">
+                Hapus Semua
+              </button>
+            )}
+          </div>
           <div className="history-list">
-            {recentSearches.map((city, idx) => (
-              <div
-                key={idx}
-                className="history-item"
-                onClick={() => handleRecentClick(city)}
-              >
-                <span className="history-item-name">{city}</span>
-                <span className="material-symbols-outlined history-item-arrow">arrow_forward</span>
+            {recentSearches.length === 0 ? (
+              <div className="history-empty-state">
+                <span className="material-symbols-outlined history-empty-icon">history_toggle_off</span>
+                <span className="history-empty-text">Belum ada riwayat</span>
               </div>
-            ))}
+            ) : (
+              recentSearches.map((city, idx) => (
+                <div
+                  key={idx}
+                  className="history-item"
+                  onClick={() => handleRecentClick(city)}
+                >
+                  <span className="history-item-name">{city}</span>
+                  <button
+                    className="history-item-delete"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteHistoryItem(city);
+                    }}
+                    title={`Hapus ${city} dari riwayat`}
+                  >
+                    <span className="material-symbols-outlined delete-icon-small">close</span>
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </aside>
@@ -469,6 +548,14 @@ function App() {
               onChange={(e) => setCityInput(e.target.value)}
               className="search-input"
             />
+            <button
+              type="button"
+              className="location-button"
+              onClick={handleGeolocation}
+              title="Gunakan lokasi saya"
+            >
+              <span className="material-symbols-outlined">my_location</span>
+            </button>
             <button type="submit" className="search-button">
               <span className="material-symbols-outlined">search</span>
             </button>

@@ -250,12 +250,39 @@ body {
   min-height: 120px;
 }
 
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .history-title {
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.clear-history-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.clear-history-btn:hover {
+  color: var(--accent-red);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 .history-list {
@@ -275,6 +302,30 @@ body {
   border-radius: 2px;
 }
 
+.history-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 16px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.history-empty-icon {
+  font-size: 1.3rem !important;
+  color: var(--text-muted);
+}
+
+.history-empty-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 .history-item {
   display: flex;
   justify-content: space-between;
@@ -290,6 +341,28 @@ body {
 .history-item:hover {
   background: rgba(255, 255, 255, 0.02);
   border-color: var(--border-medium);
+}
+
+.history-item-delete {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.history-item-delete:hover {
+  color: var(--accent-red);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.delete-icon-small {
+  font-size: 0.95rem !important;
 }
 
 .history-item-name {
@@ -377,8 +450,31 @@ body {
 
 @media (min-width: 768px) {
   .search-form {
-    width: 380px;
+    width: 420px;
   }
+}
+
+.location-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.location-button span {
+  font-size: 1.15rem !important;
+}
+
+.location-button:hover {
+  border-color: var(--border-focus);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .search-input {
