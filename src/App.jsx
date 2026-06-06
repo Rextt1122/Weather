@@ -451,7 +451,6 @@ function App() {
         <header className="header-container setup-header">
           <div className="brand-section">
             <div className="brand-logo-row">
-              <img src="/favicon.svg" alt="Cloudy Logo" className="brand-logo-img" />
               <span className="brand-name">Cloudy</span>
             </div>
           </div>
