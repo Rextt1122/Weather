@@ -328,10 +328,10 @@ function App() {
         html: `<div style="
           width: 16px;
           height: 16px;
-          background: #6366f1;
+          background: #73d4fc;
           border: 2px solid #060913;
           border-radius: 50%;
-          box-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
+          box-shadow: 0 0 10px rgba(115, 212, 252, 0.6);
         "></div>`,
         iconSize: [16, 16],
         iconAnchor: [8, 8]
