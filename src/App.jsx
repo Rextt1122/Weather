@@ -485,7 +485,6 @@ function App() {
       <aside className="sidebar-panel">
         <div className="brand-section">
           <div className="brand-logo-row">
-            <img src="/favicon.svg" alt="Cloudy Logo" className="brand-logo-img" />
             <h1 className="brand-name">Cloudy</h1>
           </div>
           <div className="brand-badge">
