@@ -117,9 +117,11 @@ body {
   gap: 10px;
 }
 
-.brand-icon {
-  color: var(--accent-indigo);
-  font-size: 1.6rem !important;
+.brand-logo-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(115, 212, 252, 0.4));
 }
 
 .brand-name {
@@ -330,7 +332,41 @@ body {
 .search-bar-row {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.welcome-greeting {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+}
+
+@media (min-width: 768px) {
+  .welcome-greeting {
+    display: flex;
+  }
+}
+
+.greeting-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.greeting-icon {
+  font-size: 1.2rem !important;
+  color: var(--accent-indigo);
+}
+
+.greeting-subtext {
+  font-size: 0.72rem;
+  color: var(--text-muted);
 }
 
 .search-form {

@@ -88,6 +88,15 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
+  const getGreeting = () => {
+    const hr = currentTime.getHours();
+    if (hr < 5) return 'Selamat dini hari';
+    if (hr < 11) return 'Selamat pagi';
+    if (hr < 15) return 'Selamat siang';
+    if (hr < 18) return 'Selamat sore';
+    return 'Selamat malam';
+  };
+
   const formatTime = (date) => {
     return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   };
@@ -358,7 +367,10 @@ function App() {
       <main className="app-container">
         <header className="header-container setup-header">
           <div className="brand-section">
-            <span className="brand-logo">Cloudy</span>
+            <div className="brand-logo-row">
+              <img src="/favicon.svg" alt="Cloudy Logo" className="brand-logo-img" />
+              <span className="brand-name">Cloudy</span>
+            </div>
           </div>
         </header>
 
@@ -390,7 +402,7 @@ function App() {
       <aside className="sidebar-panel">
         <div className="brand-section">
           <div className="brand-logo-row">
-            <span className="material-symbols-outlined brand-icon">filter_drama</span>
+            <img src="/favicon.svg" alt="Cloudy Logo" className="brand-logo-img" />
             <h1 className="brand-name">Cloudy</h1>
           </div>
           <div className="brand-badge">
@@ -442,6 +454,13 @@ function App() {
 
       <section className="main-content">
         <div className="search-bar-row">
+          <div className="welcome-greeting">
+            <span className="greeting-text">
+              <span className="material-symbols-outlined greeting-icon">waving_hand</span>
+              {getGreeting()}!
+            </span>
+            <span className="greeting-subtext">Pantau cuaca hari ini.</span>
+          </div>
           <form onSubmit={handleSearch} className="search-form">
             <input
               type="text"
