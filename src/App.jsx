@@ -25,6 +25,32 @@ const getWeatherMaterialIcon = (iconCode) => {
   return mapping[iconCode] || 'sunny';
 };
 
+const getWeatherIconColor = (iconCode) => {
+  const mapping = {
+    '01d': '#fbbf24', // Sunny (Amber)
+    '01n': '#94a3b8', // Nights Stay (Slate)
+    '02d': '#f59e0b', // Partly Cloudy Day (Warm Gold)
+    '02n': '#64748b', // Partly Cloudy Night (Deep Slate)
+    '03d': '#94a3b8', // Cloudy
+    '03n': '#94a3b8',
+    '04d': '#64748b', // Overcast
+    '04n': '#64748b',
+    '09d': '#38bdf8', // Showers (Sky Blue)
+    '09n': '#38bdf8',
+    '10d': '#0ea5e9', // Rain (Deep Sky Blue)
+    '10n': '#0ea5e9',
+    '11d': '#fbbf24', // Thunderstorm (Yellow Lightning)
+    '11n': '#fbbf24',
+    '13d': '#99f6e4', // Snow (Teal)
+    '13n': '#99f6e4',
+    '50d': '#cbd5e1', // Mist/Fog (Silver)
+    '50n': '#cbd5e1'
+  };
+  return mapping[iconCode] || '#73d4fc';
+};
+
+
+
 const SkeletonLoader = () => (
   <section className="dashboard-sections-grid skeleton-loader-grid">
     <div className="current-weather-section">
@@ -159,7 +185,8 @@ function App() {
         day: dayName,
         temp: Math.round(item.main.temp),
         condition: item.weather[0].description,
-        iconCode: item.weather[0].icon
+        iconCode: item.weather[0].icon,
+        pop: item.pop !== undefined ? Math.round(item.pop * 100) : 0
       };
     });
   };
@@ -586,7 +613,13 @@ function App() {
               <article className="weather-card">
                 <h2 className="city-name">{weatherData.name}</h2>
                 <div className="weather-icon-container">
-                  <span className="material-symbols-outlined weather-icon-symbol">
+                  <span
+                    className="material-symbols-outlined weather-icon-symbol"
+                    style={{
+                      color: getWeatherIconColor(weatherData.iconCode),
+                      filter: `drop-shadow(0 4px 12px ${getWeatherIconColor(weatherData.iconCode)}40)`
+                    }}
+                  >
                     {getWeatherMaterialIcon(weatherData.iconCode)}
                   </span>
                 </div>
@@ -676,9 +709,20 @@ function App() {
                   {forecastData.map((dayData, idx) => (
                     <div key={idx} className="forecast-card">
                       <span className="forecast-day">{dayData.day}</span>
-                      <span className="material-symbols-outlined forecast-icon-symbol">
-                        {getWeatherMaterialIcon(dayData.iconCode)}
-                      </span>
+                      <div className="forecast-weather-visual">
+                        <span
+                          className="material-symbols-outlined forecast-icon-symbol"
+                          style={{ color: getWeatherIconColor(dayData.iconCode) }}
+                        >
+                          {getWeatherMaterialIcon(dayData.iconCode)}
+                        </span>
+                        {dayData.pop > 10 && (
+                          <span className="forecast-pop" title="Probabilitas Hujan">
+                            <span className="material-symbols-outlined pop-icon">water_drop</span>
+                            {dayData.pop}%
+                          </span>
+                        )}
+                      </div>
                       <span className="forecast-temp">{dayData.temp}{weatherData.tempUnit}</span>
                       <span className="forecast-condition">{dayData.condition}</span>
                     </div>
