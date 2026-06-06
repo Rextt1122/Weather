@@ -25,6 +25,35 @@ const getWeatherMaterialIcon = (iconCode) => {
   return mapping[iconCode] || 'sunny';
 };
 
+const SkeletonLoader = () => (
+  <section className="dashboard-sections-grid skeleton-loader-grid">
+    <div className="current-weather-section">
+      <div className="skeleton skeleton-weather-card"></div>
+    </div>
+    <div className="highlights-grid">
+      <div className="skeleton skeleton-stat-card"></div>
+      <div className="skeleton skeleton-stat-card"></div>
+      <div className="skeleton skeleton-stat-card"></div>
+      <div className="skeleton skeleton-stat-card"></div>
+      <div className="skeleton skeleton-stat-card"></div>
+      <div className="skeleton skeleton-stat-card"></div>
+    </div>
+    <div className="dashboard-bottom-grid">
+      <div className="skeleton skeleton-map-card"></div>
+      <div className="forecast-section">
+        <div className="skeleton skeleton-forecast-title"></div>
+        <div className="forecast-row">
+          <div className="skeleton skeleton-forecast-card"></div>
+          <div className="skeleton skeleton-forecast-card"></div>
+          <div className="skeleton skeleton-forecast-card"></div>
+          <div className="skeleton skeleton-forecast-card"></div>
+          <div className="skeleton skeleton-forecast-card"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
 function App() {
   const [cityInput, setCityInput] = useState('');
   const [weatherData, setWeatherData] = useState(null);
@@ -45,7 +74,6 @@ function App() {
 
   useEffect(() => {
     if (error) {
-      setShowErrorToast(true);
       const timer = setTimeout(() => {
         setShowErrorToast(false);
       }, 4000);
@@ -82,7 +110,6 @@ function App() {
 
   const processWeatherData = (data) => {
     const tempSymbol = units === 'metric' ? '°C' : '°F';
-    const windSymbol = units === 'metric' ? 'km/h' : 'mph';
     const windRaw = data.wind.speed;
     const windSpeed = units === 'metric' ? `${(windRaw * 3.6).toFixed(1)} km/h` : `${windRaw.toFixed(1)} mph`;
 
@@ -159,6 +186,7 @@ function App() {
       addRecentSearch(weatherJson.name);
     } catch (err) {
       setError(err.message);
+      setShowErrorToast(true);
     } finally {
       setLoading(false);
     }
@@ -179,27 +207,34 @@ function App() {
   useEffect(() => {
     if (isApiKeyPlaceholder) return;
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          fetchWeather({
-            type: 'coords',
-            lat: position.coords.latitude,
-            lon: position.coords.longitude
-          });
-        },
-        () => {
-          fetchWeather({ type: 'city', name: 'Jakarta' });
-        }
-      );
-    } else {
-      fetchWeather({ type: 'city', name: 'Jakarta' });
-    }
+    const initWeather = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            fetchWeather({
+              type: 'coords',
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            });
+          },
+          () => {
+            fetchWeather({ type: 'city', name: 'Jakarta' });
+          }
+        );
+      } else {
+        fetchWeather({ type: 'city', name: 'Jakarta' });
+      }
+    };
+
+    const timer = setTimeout(initWeather, 0);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (isApiKeyPlaceholder || loading) return;
     fetchWeather(lastQueryRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [units]);
 
   useEffect(() => {
@@ -271,15 +306,15 @@ function App() {
       const customIcon = L.divIcon({
         className: 'custom-map-marker',
         html: `<div style="
-          width: 18px;
-          height: 18px;
-          background: #2563eb;
-          border: 3px solid #ffffff;
+          width: 16px;
+          height: 16px;
+          background: #6366f1;
+          border: 2px solid #060913;
           border-radius: 50%;
-          box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+          box-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
         "></div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
       });
 
       const marker = L.marker([weatherData.lat, weatherData.lon], { icon: customIcon }).addTo(map);
@@ -293,6 +328,7 @@ function App() {
         }
       }, 250);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weatherData, loading]);
 
   useEffect(() => {
@@ -315,60 +351,33 @@ function App() {
     fetchWeather({ type: 'city', name: cityName });
   };
 
-  const SkeletonLoader = () => (
-    <section className="dashboard-sections-grid" style={{ gridColumn: '1 / -1' }}>
-      <div className="current-weather-section">
-        <div className="skeleton skeleton-weather-card"></div>
-      </div>
-      <div className="highlights-grid">
-        <div className="skeleton skeleton-stat-card"></div>
-        <div className="skeleton skeleton-stat-card"></div>
-        <div className="skeleton skeleton-stat-card"></div>
-        <div className="skeleton skeleton-stat-card"></div>
-        <div className="skeleton skeleton-stat-card"></div>
-        <div className="skeleton skeleton-stat-card"></div>
-      </div>
-      <div className="dashboard-bottom-grid" style={{ gridColumn: '1 / -1' }}>
-        <div className="skeleton skeleton-map-card"></div>
-        <div className="forecast-section">
-          <div className="skeleton skeleton-forecast-card" style={{ height: '30px', width: '160px', marginBottom: '8px' }}></div>
-          <div className="forecast-row">
-            <div className="skeleton skeleton-forecast-card"></div>
-            <div className="skeleton skeleton-forecast-card"></div>
-            <div className="skeleton skeleton-forecast-card"></div>
-            <div className="skeleton skeleton-forecast-card"></div>
-            <div className="skeleton skeleton-forecast-card"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  // SkeletonLoader moved outside App component to follow react-hooks/static-components rule
 
   if (isApiKeyPlaceholder) {
     return (
       <main className="app-container">
-        <header className="header-container" style={{ justifyContent: 'center' }}>
+        <header className="header-container setup-header">
           <div className="brand-section">
-            <span className="brand-logo">SkyFlow</span>
+            <span className="brand-logo">Cloudy</span>
           </div>
         </header>
 
-        <section className="error-container" style={{ background: 'rgba(99, 102, 241, 0.05)', borderColor: 'rgba(99, 102, 241, 0.2)', color: '#e0e7ff', gap: '20px', padding: '40px' }}>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: '700', background: 'linear-gradient(135deg, #818cf8 0%, #06b6d4 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <section className="error-container setup-container">
+          <h2 className="setup-title">
             Konfigurasi Kunci API Dibutuhkan
           </h2>
-          <p style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.95rem', lineHeight: '1.6' }}>
-            SkyFlow membutuhkan kunci API OpenWeatherMap untuk memuat data cuaca riil di seluruh Indonesia dan peta interaktif.
+          <p className="setup-desc">
+            Cloudy membutuhkan kunci API OpenWeatherMap untuk memuat data cuaca riil di seluruh Indonesia dan peta interaktif.
           </p>
-          <div style={{ width: '100%', background: 'rgba(0, 0, 0, 0.2)', padding: '24px', borderRadius: '18px', border: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <p style={{ fontWeight: '600', color: '#818cf8' }}>Langkah-langkah Setup:</p>
-            <ol style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px', color: 'rgba(255, 255, 255, 0.8)' }}>
-              <li>Buka file <strong style={{ color: '#06b6d4' }}>.env</strong> di direktori utama proyek.</li>
-              <li>Ganti teks <code style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>YOUR_OPENWEATHERMAP_API_KEY_HERE</code> dengan API Key Anda yang valid.</li>
+          <div className="setup-steps-card">
+            <p className="setup-steps-title">Langkah-langkah Setup:</p>
+            <ol className="setup-steps-list">
+              <li>Buka file <strong>.env</strong> di direktori utama proyek.</li>
+              <li>Ganti teks <code>YOUR_OPENWEATHERMAP_API_KEY_HERE</code> dengan API Key Anda yang valid.</li>
               <li>Simpan berkas dan muat ulang halaman peramban ini.</li>
             </ol>
           </div>
-          <p style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+          <p className="setup-footer">
             Catatan: Dapatkan API Key gratis di openweathermap.org dengan mendaftarkan akun.
           </p>
         </section>
@@ -382,7 +391,7 @@ function App() {
         <div className="brand-section">
           <div className="brand-logo-row">
             <span className="material-symbols-outlined brand-icon">filter_drama</span>
-            <h1 className="brand-name">SkyFlow Pro</h1>
+            <h1 className="brand-name">Cloudy</h1>
           </div>
           <div className="brand-badge">
             <span className="badge-dot"></span>
@@ -540,7 +549,7 @@ function App() {
               </div>
             </div>
 
-            <div className="dashboard-bottom-grid" style={{ gridColumn: '1 / -1' }}>
+            <div className="dashboard-bottom-grid">
               <div className="map-section">
                 <div className="map-card">
                   <div className="map-header">
